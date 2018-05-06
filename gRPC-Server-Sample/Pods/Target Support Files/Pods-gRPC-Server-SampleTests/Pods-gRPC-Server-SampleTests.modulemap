@@ -1,0 +1,6 @@
+framework module Pods_gRPC_Server_SampleTests {
+  umbrella header "Pods-gRPC-Server-SampleTests-umbrella.h"
+
+  export *
+  module * { export * }
+}
