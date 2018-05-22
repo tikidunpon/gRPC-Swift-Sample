@@ -13,9 +13,9 @@
 		7140DFCC209E98A000FF08BB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7140DFCB209E98A000FF08BB /* Assets.xcassets */; };
 		7140DFCF209E98A000FF08BB /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7140DFCD209E98A000FF08BB /* Main.storyboard */; };
 		7140DFDB209E98A000FF08BB /* gRPC_Server_SampleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7140DFDA209E98A000FF08BB /* gRPC_Server_SampleTests.swift */; };
-		7140DFF0209E9E6B00FF08BB /* helloworld.pb.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7140DFEE209E9E6A00FF08BB /* helloworld.pb.swift */; };
-		7140DFF1209E9E6B00FF08BB /* helloworld.grpc.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7140DFEF209E9E6B00FF08BB /* helloworld.grpc.swift */; };
 		7140DFF3209E9E7D00FF08BB /* GreeterProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7140DFF2209E9E7D00FF08BB /* GreeterProvider.swift */; };
+		71DB745820B46F6D0000C69A /* helloworld.pb.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71DB745620B46F6D0000C69A /* helloworld.pb.swift */; };
+		71DB745920B46F6D0000C69A /* helloworld.grpc.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71DB745720B46F6D0000C69A /* helloworld.grpc.swift */; };
 		AB6013272B8A891D5374CE76 /* Pods_gRPC_Server_Sample.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2D268768644CA1CBC0A00D1B /* Pods_gRPC_Server_Sample.framework */; };
 /* End PBXBuildFile section */
 
@@ -43,9 +43,9 @@
 		7140DFD6209E98A000FF08BB /* gRPC-Server-SampleTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "gRPC-Server-SampleTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		7140DFDA209E98A000FF08BB /* gRPC_Server_SampleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = gRPC_Server_SampleTests.swift; sourceTree = "<group>"; };
 		7140DFDC209E98A000FF08BB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		7140DFEE209E9E6A00FF08BB /* helloworld.pb.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = helloworld.pb.swift; sourceTree = "<group>"; };
-		7140DFEF209E9E6B00FF08BB /* helloworld.grpc.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = helloworld.grpc.swift; sourceTree = "<group>"; };
 		7140DFF2209E9E7D00FF08BB /* GreeterProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GreeterProvider.swift; sourceTree = "<group>"; };
+		71DB745620B46F6D0000C69A /* helloworld.pb.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = helloworld.pb.swift; path = ../../../GeneratedForServer/helloworld.pb.swift; sourceTree = "<group>"; };
+		71DB745720B46F6D0000C69A /* helloworld.grpc.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = helloworld.grpc.swift; path = ../../../GeneratedForServer/helloworld.grpc.swift; sourceTree = "<group>"; };
 		85508B314C577D28D67615E7 /* Pods_gRPC_Server_SampleTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_gRPC_Server_SampleTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CBC42FDE5535580FB02A429A /* Pods-gRPC-Server-Sample.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-gRPC-Server-Sample.release.xcconfig"; path = "Pods/Target Support Files/Pods-gRPC-Server-Sample/Pods-gRPC-Server-Sample.release.xcconfig"; sourceTree = "<group>"; };
 		D4E73FAF32864F2C89BEF6D9 /* Pods-gRPC-Server-Sample.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-gRPC-Server-Sample.debug.xcconfig"; path = "Pods/Target Support Files/Pods-gRPC-Server-Sample/Pods-gRPC-Server-Sample.debug.xcconfig"; sourceTree = "<group>"; };
@@ -127,8 +127,8 @@
 		7140DFE5209E9ADA00FF08BB /* Generated */ = {
 			isa = PBXGroup;
 			children = (
-				7140DFEF209E9E6B00FF08BB /* helloworld.grpc.swift */,
-				7140DFEE209E9E6A00FF08BB /* helloworld.pb.swift */,
+				71DB745720B46F6D0000C69A /* helloworld.grpc.swift */,
+				71DB745620B46F6D0000C69A /* helloworld.pb.swift */,
 			);
 			path = Generated;
 			sourceTree = "<group>";
@@ -312,10 +312,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7140DFF0209E9E6B00FF08BB /* helloworld.pb.swift in Sources */,
 				7140DFF3209E9E7D00FF08BB /* GreeterProvider.swift in Sources */,
 				7140DFCA209E989F00FF08BB /* ViewController.swift in Sources */,
-				7140DFF1209E9E6B00FF08BB /* helloworld.grpc.swift in Sources */,
+				71DB745820B46F6D0000C69A /* helloworld.pb.swift in Sources */,
+				71DB745920B46F6D0000C69A /* helloworld.grpc.swift in Sources */,
 				7140DFC8209E989F00FF08BB /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

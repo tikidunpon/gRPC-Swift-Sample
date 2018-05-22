@@ -25,37 +25,10 @@ import Dispatch
 import SwiftGRPC
 import SwiftProtobuf
 
-internal protocol Greeter_GreeterSayHelloCall: ClientCallUnary {}
-
-fileprivate final class Greeter_GreeterSayHelloCallBase: ClientCallUnaryBase<Greeter_HelloRequest, Greeter_HelloReply>, Greeter_GreeterSayHelloCall {
-  override class var method: String { return "/greeter.Greeter/SayHello" }
-}
-
-
-/// Instantiate Greeter_GreeterServiceClient, then call methods of this protocol to make API calls.
-internal protocol Greeter_GreeterService: ServiceClient {
-  /// Synchronous. Unary.
-  func sayHello(_ request: Greeter_HelloRequest) throws -> Greeter_HelloReply
-  /// Asynchronous. Unary.
-  func sayHello(_ request: Greeter_HelloRequest, completion: @escaping (Greeter_HelloReply?, CallResult) -> Void) throws -> Greeter_GreeterSayHelloCall
-
-}
-
-internal final class Greeter_GreeterServiceClient: ServiceClientBase, Greeter_GreeterService {
-  /// Synchronous. Unary.
-  internal func sayHello(_ request: Greeter_HelloRequest) throws -> Greeter_HelloReply {
-    return try Greeter_GreeterSayHelloCallBase(channel)
-      .run(request: request, metadata: metadata)
-  }
-  /// Asynchronous. Unary.
-  internal func sayHello(_ request: Greeter_HelloRequest, completion: @escaping (Greeter_HelloReply?, CallResult) -> Void) throws -> Greeter_GreeterSayHelloCall {
-    return try Greeter_GreeterSayHelloCallBase(channel)
-      .start(request: request, metadata: metadata, completion: completion)
-  }
-
-}
 
 /// To build a server, implement a class that conforms to this protocol.
+/// If one of the methods returning `ServerStatus?` returns nil,
+/// it is expected that you have already returned a status to the client by means of `session.close`.
 internal protocol Greeter_GreeterProvider {
   func sayHello(request: Greeter_HelloRequest, session: Greeter_GreeterSayHelloSession) throws -> Greeter_HelloReply
 }
@@ -84,18 +57,18 @@ internal final class Greeter_GreeterServer: ServiceServer {
     super.init(address: address, certificateString: certificateString, keyString: keyString)
   }
 
-  /// Start the server.
-  internal override func handleMethod(_ method: String, handler: Handler, queue: DispatchQueue) throws -> Bool {
+  /// Determines and calls the appropriate request handler, depending on the request's method.
+  /// Throws `HandleMethodError.unknownMethod` for methods not handled by this service.
+  internal override func handleMethod(_ method: String, handler: Handler) throws -> ServerStatus? {
     let provider = self.provider
     switch method {
     case "/greeter.Greeter/SayHello":
-      try Greeter_GreeterSayHelloSessionBase(
+      return try Greeter_GreeterSayHelloSessionBase(
         handler: handler,
         providerBlock: { try provider.sayHello(request: $0, session: $1 as! Greeter_GreeterSayHelloSessionBase) })
-          .run(queue: queue)
-      return true
+          .run()
     default:
-      return false
+      throw HandleMethodError.unknownMethod
     }
   }
 }

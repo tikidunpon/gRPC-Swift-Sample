@@ -19,6 +19,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         gRPC.initialize()
         print("GRPC version", gRPC.version)
+        print("GRPC gStandsFor", gRPC.gStandsFor)
         return true
     }
 
