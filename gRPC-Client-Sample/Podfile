@@ -6,7 +6,7 @@ target 'gRPC-Client-Sample' do
   use_frameworks!
 
   # Pods for gRPC-Client-Sample
-  pod 'SwiftGRPC'
+  pod 'SwiftGRPC', '0.4.3'
 
   target 'gRPC-Client-SampleTests' do
     inherit! :search_paths
