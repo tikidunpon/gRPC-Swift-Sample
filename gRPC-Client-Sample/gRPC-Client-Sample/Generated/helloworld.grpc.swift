@@ -27,7 +27,7 @@ import SwiftProtobuf
 
 internal protocol Greeter_GreeterSayHelloCall: ClientCallUnary {}
 
-fileprivate final class Greeter_GreeterSayHelloCallBase: ClientCallUnaryBase<Greeter_HelloRequest, Greeter_HelloReply>, Greeter_GreeterSayHelloCall {
+fileprivate final class Greeter_GreeterSayHelloCallBase: ClientCallUnaryBase<Greeter_HelloRequest, Greeter_HelloResponse>, Greeter_GreeterSayHelloCall {
   override class var method: String { return "/greeter.Greeter/SayHello" }
 }
 
@@ -35,20 +35,20 @@ fileprivate final class Greeter_GreeterSayHelloCallBase: ClientCallUnaryBase<Gre
 /// Instantiate Greeter_GreeterServiceClient, then call methods of this protocol to make API calls.
 internal protocol Greeter_GreeterService: ServiceClient {
   /// Synchronous. Unary.
-  func sayHello(_ request: Greeter_HelloRequest) throws -> Greeter_HelloReply
+  func sayHello(_ request: Greeter_HelloRequest) throws -> Greeter_HelloResponse
   /// Asynchronous. Unary.
-  func sayHello(_ request: Greeter_HelloRequest, completion: @escaping (Greeter_HelloReply?, CallResult) -> Void) throws -> Greeter_GreeterSayHelloCall
+  func sayHello(_ request: Greeter_HelloRequest, completion: @escaping (Greeter_HelloResponse?, CallResult) -> Void) throws -> Greeter_GreeterSayHelloCall
 
 }
 
 internal final class Greeter_GreeterServiceClient: ServiceClientBase, Greeter_GreeterService {
   /// Synchronous. Unary.
-  internal func sayHello(_ request: Greeter_HelloRequest) throws -> Greeter_HelloReply {
+  internal func sayHello(_ request: Greeter_HelloRequest) throws -> Greeter_HelloResponse {
     return try Greeter_GreeterSayHelloCallBase(channel)
       .run(request: request, metadata: metadata)
   }
   /// Asynchronous. Unary.
-  internal func sayHello(_ request: Greeter_HelloRequest, completion: @escaping (Greeter_HelloReply?, CallResult) -> Void) throws -> Greeter_GreeterSayHelloCall {
+  internal func sayHello(_ request: Greeter_HelloRequest, completion: @escaping (Greeter_HelloResponse?, CallResult) -> Void) throws -> Greeter_GreeterSayHelloCall {
     return try Greeter_GreeterSayHelloCallBase(channel)
       .start(request: request, metadata: metadata, completion: completion)
   }
@@ -57,13 +57,13 @@ internal final class Greeter_GreeterServiceClient: ServiceClientBase, Greeter_Gr
 
 class Greeter_GreeterServiceTestStub: ServiceClientTestStubBase, Greeter_GreeterService {
   var sayHelloRequests: [Greeter_HelloRequest] = []
-  var sayHelloResponses: [Greeter_HelloReply] = []
-  func sayHello(_ request: Greeter_HelloRequest) throws -> Greeter_HelloReply {
+  var sayHelloResponses: [Greeter_HelloResponse] = []
+  func sayHello(_ request: Greeter_HelloRequest) throws -> Greeter_HelloResponse {
     sayHelloRequests.append(request)
     defer { sayHelloResponses.removeFirst() }
     return sayHelloResponses.first!
   }
-  func sayHello(_ request: Greeter_HelloRequest, completion: @escaping (Greeter_HelloReply?, CallResult) -> Void) throws -> Greeter_GreeterSayHelloCall {
+  func sayHello(_ request: Greeter_HelloRequest, completion: @escaping (Greeter_HelloResponse?, CallResult) -> Void) throws -> Greeter_GreeterSayHelloCall {
     fatalError("not implemented")
   }
 
