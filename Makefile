@@ -1,6 +1,11 @@
 PROTO_DIR_CLIENT = gRPC-Client-Sample/gRPC-Client-Sample/Generated
 PROTO_DIR_SERVER = gRPC-Server-Sample/gRPC-Server-Sample/Generated
 
+.PHONY: protoc
+protoc:
+	@make protoc_client
+	@make protoc_server
+
 .PHONY: protoc_client
 protoc_client:
 	protoc helloworld.proto \

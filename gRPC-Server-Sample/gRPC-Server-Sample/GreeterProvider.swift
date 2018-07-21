@@ -9,8 +9,8 @@
 import Foundation
 
 final class GreeterProvider: Greeter_GreeterProvider {
-    func sayHello(request: Greeter_HelloRequest, session: Greeter_GreeterSayHelloSession) throws -> Greeter_HelloReply {
-        var g = Greeter_HelloReply()
+    func sayHello(request: Greeter_HelloRequest, session: Greeter_GreeterSayHelloSession) throws -> Greeter_HelloResponse {
+        var g = Greeter_HelloResponse()
         g.message = request.name + " world"
         return g
     }

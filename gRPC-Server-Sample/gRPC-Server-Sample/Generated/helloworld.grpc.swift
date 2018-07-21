@@ -29,47 +29,29 @@ import SwiftProtobuf
 /// To build a server, implement a class that conforms to this protocol.
 /// If one of the methods returning `ServerStatus?` returns nil,
 /// it is expected that you have already returned a status to the client by means of `session.close`.
-internal protocol Greeter_GreeterProvider {
-  func sayHello(request: Greeter_HelloRequest, session: Greeter_GreeterSayHelloSession) throws -> Greeter_HelloReply
+internal protocol Greeter_GreeterProvider: ServiceProvider {
+  func sayHello(request: Greeter_HelloRequest, session: Greeter_GreeterSayHelloSession) throws -> Greeter_HelloResponse
 }
 
-internal protocol Greeter_GreeterSayHelloSession: ServerSessionUnary {}
-
-fileprivate final class Greeter_GreeterSayHelloSessionBase: ServerSessionUnaryBase<Greeter_HelloRequest, Greeter_HelloReply>, Greeter_GreeterSayHelloSession {}
-
-
-/// Main server for generated service
-internal final class Greeter_GreeterServer: ServiceServer {
-  private let provider: Greeter_GreeterProvider
-
-  internal init(address: String, provider: Greeter_GreeterProvider) {
-    self.provider = provider
-    super.init(address: address)
-  }
-
-  internal init?(address: String, certificateURL: URL, keyURL: URL, provider: Greeter_GreeterProvider) {
-    self.provider = provider
-    super.init(address: address, certificateURL: certificateURL, keyURL: keyURL)
-  }
-
-  internal init?(address: String, certificateString: String, keyString: String, provider: Greeter_GreeterProvider) {
-    self.provider = provider
-    super.init(address: address, certificateString: certificateString, keyString: keyString)
-  }
+extension Greeter_GreeterProvider {
+  internal var serviceName: String { return "greeter.Greeter" }
 
   /// Determines and calls the appropriate request handler, depending on the request's method.
   /// Throws `HandleMethodError.unknownMethod` for methods not handled by this service.
-  internal override func handleMethod(_ method: String, handler: Handler) throws -> ServerStatus? {
-    let provider = self.provider
+  internal func handleMethod(_ method: String, handler: Handler) throws -> ServerStatus? {
     switch method {
     case "/greeter.Greeter/SayHello":
       return try Greeter_GreeterSayHelloSessionBase(
         handler: handler,
-        providerBlock: { try provider.sayHello(request: $0, session: $1 as! Greeter_GreeterSayHelloSessionBase) })
+        providerBlock: { try self.sayHello(request: $0, session: $1 as! Greeter_GreeterSayHelloSessionBase) })
           .run()
     default:
       throw HandleMethodError.unknownMethod
     }
   }
 }
+
+internal protocol Greeter_GreeterSayHelloSession: ServerSessionUnary {}
+
+fileprivate final class Greeter_GreeterSayHelloSessionBase: ServerSessionUnaryBase<Greeter_HelloRequest, Greeter_HelloResponse>, Greeter_GreeterSayHelloSession {}
 
