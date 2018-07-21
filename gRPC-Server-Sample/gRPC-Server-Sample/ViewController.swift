@@ -18,9 +18,8 @@ class ViewController: NSViewController {
 
         // Do any additional setup after loading the view.
         let greeterProvider = GreeterProvider()
-        
-        let greeterServer = Greeter_GreeterServer.init(address: "127.0.0.1:50051",
-                                                       provider: greeterProvider)
+        let greeterServer = ServiceServer.init(address: "127.0.0.1:50051",
+                                               serviceProviders: [greeterProvider])
         greeterServer.start()
         
         // This blocks to keep the main thread from finishing while the server runs,

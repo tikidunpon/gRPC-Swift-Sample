@@ -33,7 +33,7 @@ struct Greeter_HelloRequest {
 }
 
 /// The response message containing the greetings
-struct Greeter_HelloReply {
+struct Greeter_HelloResponse {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -78,8 +78,8 @@ extension Greeter_HelloRequest: SwiftProtobuf.Message, SwiftProtobuf._MessageImp
   }
 }
 
-extension Greeter_HelloReply: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
-  static let protoMessageName: String = _protobuf_package + ".HelloReply"
+extension Greeter_HelloResponse: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+  static let protoMessageName: String = _protobuf_package + ".HelloResponse"
   static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
     1: .same(proto: "message"),
   ]
@@ -100,7 +100,7 @@ extension Greeter_HelloReply: SwiftProtobuf.Message, SwiftProtobuf._MessageImple
     try unknownFields.traverse(visitor: &visitor)
   }
 
-  func _protobuf_generated_isEqualTo(other: Greeter_HelloReply) -> Bool {
+  func _protobuf_generated_isEqualTo(other: Greeter_HelloResponse) -> Bool {
     if self.message != other.message {return false}
     if unknownFields != other.unknownFields {return false}
     return true
