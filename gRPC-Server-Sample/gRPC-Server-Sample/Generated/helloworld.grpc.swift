@@ -31,6 +31,7 @@ import SwiftProtobuf
 /// it is expected that you have already returned a status to the client by means of `session.close`.
 internal protocol Greeter_GreeterProvider: ServiceProvider {
   func sayHello(request: Greeter_HelloRequest, session: Greeter_GreeterSayHelloSession) throws -> Greeter_HelloResponse
+  func sayHelloBi(session: Greeter_GreeterSayHelloBiSession) throws -> ServerStatus?
 }
 
 extension Greeter_GreeterProvider {
@@ -45,6 +46,11 @@ extension Greeter_GreeterProvider {
         handler: handler,
         providerBlock: { try self.sayHello(request: $0, session: $1 as! Greeter_GreeterSayHelloSessionBase) })
           .run()
+    case "/greeter.Greeter/SayHelloBi":
+      return try Greeter_GreeterSayHelloBiSessionBase(
+        handler: handler,
+        providerBlock: { try self.sayHelloBi(session: $0 as! Greeter_GreeterSayHelloBiSessionBase) })
+          .run()
     default:
       throw HandleMethodError.unknownMethod
     }
@@ -54,4 +60,33 @@ extension Greeter_GreeterProvider {
 internal protocol Greeter_GreeterSayHelloSession: ServerSessionUnary {}
 
 fileprivate final class Greeter_GreeterSayHelloSessionBase: ServerSessionUnaryBase<Greeter_HelloRequest, Greeter_HelloResponse>, Greeter_GreeterSayHelloSession {}
+
+internal protocol Greeter_GreeterSayHelloBiSession: ServerSessionBidirectionalStreaming {
+  /// Do not call this directly, call `receive()` in the protocol extension below instead.
+  func _receive(timeout: DispatchTime) throws -> Greeter_HelloRequest?
+  /// Call this to wait for a result. Nonblocking.
+  func receive(completion: @escaping (ResultOrRPCError<Greeter_HelloRequest?>) -> Void) throws
+
+  /// Send a message to the stream. Nonblocking.
+  func send(_ message: Greeter_HelloResponse, completion: @escaping (Error?) -> Void) throws
+  /// Do not call this directly, call `send()` in the protocol extension below instead.
+  func _send(_ message: Greeter_HelloResponse, timeout: DispatchTime) throws
+
+  /// Close the connection and send the status. Non-blocking.
+  /// This method should be called if and only if your request handler returns a nil value instead of a server status;
+  /// otherwise SwiftGRPC will take care of sending the status for you.
+  func close(withStatus status: ServerStatus, completion: (() -> Void)?) throws
+}
+
+internal extension Greeter_GreeterSayHelloBiSession {
+  /// Call this to wait for a result. Blocking.
+  func receive(timeout: DispatchTime = .distantFuture) throws -> Greeter_HelloRequest? { return try self._receive(timeout: timeout) }
+}
+
+internal extension Greeter_GreeterSayHelloBiSession {
+  /// Send a message to the stream and wait for the send operation to finish. Blocking.
+  func send(_ message: Greeter_HelloResponse, timeout: DispatchTime = .distantFuture) throws { try self._send(message, timeout: timeout) }
+}
+
+fileprivate final class Greeter_GreeterSayHelloBiSessionBase: ServerSessionBidirectionalStreamingBase<Greeter_HelloRequest, Greeter_HelloResponse>, Greeter_GreeterSayHelloBiSession {}
 
