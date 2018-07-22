@@ -31,6 +31,41 @@ fileprivate final class Greeter_GreeterSayHelloCallBase: ClientCallUnaryBase<Gre
   override class var method: String { return "/greeter.Greeter/SayHello" }
 }
 
+internal protocol Greeter_GreeterSayHelloBiCall: ClientCallBidirectionalStreaming {
+  /// Do not call this directly, call `receive()` in the protocol extension below instead.
+  func _receive(timeout: DispatchTime) throws -> Greeter_HelloResponse?
+  /// Call this to wait for a result. Nonblocking.
+  func receive(completion: @escaping (ResultOrRPCError<Greeter_HelloResponse?>) -> Void) throws
+
+  /// Send a message to the stream. Nonblocking.
+  func send(_ message: Greeter_HelloRequest, completion: @escaping (Error?) -> Void) throws
+  /// Do not call this directly, call `send()` in the protocol extension below instead.
+  func _send(_ message: Greeter_HelloRequest, timeout: DispatchTime) throws
+
+  /// Call this to close the sending connection. Blocking.
+  func closeSend() throws
+  /// Call this to close the sending connection. Nonblocking.
+  func closeSend(completion: (() -> Void)?) throws
+}
+
+internal extension Greeter_GreeterSayHelloBiCall {
+  /// Call this to wait for a result. Blocking.
+  func receive(timeout: DispatchTime = .distantFuture) throws -> Greeter_HelloResponse? { return try self._receive(timeout: timeout) }
+}
+
+internal extension Greeter_GreeterSayHelloBiCall {
+  /// Send a message to the stream and wait for the send operation to finish. Blocking.
+  func send(_ message: Greeter_HelloRequest, timeout: DispatchTime = .distantFuture) throws { try self._send(message, timeout: timeout) }
+}
+
+fileprivate final class Greeter_GreeterSayHelloBiCallBase: ClientCallBidirectionalStreamingBase<Greeter_HelloRequest, Greeter_HelloResponse>, Greeter_GreeterSayHelloBiCall {
+  override class var method: String { return "/greeter.Greeter/SayHelloBi" }
+}
+
+class Greeter_GreeterSayHelloBiCallTestStub: ClientCallBidirectionalStreamingTestStub<Greeter_HelloRequest, Greeter_HelloResponse>, Greeter_GreeterSayHelloBiCall {
+  override class var method: String { return "/greeter.Greeter/SayHelloBi" }
+}
+
 
 /// Instantiate Greeter_GreeterServiceClient, then call methods of this protocol to make API calls.
 internal protocol Greeter_GreeterService: ServiceClient {
@@ -38,6 +73,11 @@ internal protocol Greeter_GreeterService: ServiceClient {
   func sayHello(_ request: Greeter_HelloRequest) throws -> Greeter_HelloResponse
   /// Asynchronous. Unary.
   func sayHello(_ request: Greeter_HelloRequest, completion: @escaping (Greeter_HelloResponse?, CallResult) -> Void) throws -> Greeter_GreeterSayHelloCall
+
+  /// Asynchronous. Bidirectional-streaming.
+  /// Use methods on the returned object to stream messages,
+  /// to wait for replies, and to close the connection.
+  func sayHelloBi(completion: ((CallResult) -> Void)?) throws -> Greeter_GreeterSayHelloBiCall
 
 }
 
@@ -53,6 +93,14 @@ internal final class Greeter_GreeterServiceClient: ServiceClientBase, Greeter_Gr
       .start(request: request, metadata: metadata, completion: completion)
   }
 
+  /// Asynchronous. Bidirectional-streaming.
+  /// Use methods on the returned object to stream messages,
+  /// to wait for replies, and to close the connection.
+  internal func sayHelloBi(completion: ((CallResult) -> Void)?) throws -> Greeter_GreeterSayHelloBiCall {
+    return try Greeter_GreeterSayHelloBiCallBase(channel)
+      .start(metadata: metadata, completion: completion)
+  }
+
 }
 
 class Greeter_GreeterServiceTestStub: ServiceClientTestStubBase, Greeter_GreeterService {
@@ -65,6 +113,12 @@ class Greeter_GreeterServiceTestStub: ServiceClientTestStubBase, Greeter_Greeter
   }
   func sayHello(_ request: Greeter_HelloRequest, completion: @escaping (Greeter_HelloResponse?, CallResult) -> Void) throws -> Greeter_GreeterSayHelloCall {
     fatalError("not implemented")
+  }
+
+  var sayHelloBiCalls: [Greeter_GreeterSayHelloBiCall] = []
+  func sayHelloBi(completion: ((CallResult) -> Void)?) throws -> Greeter_GreeterSayHelloBiCall {
+    defer { sayHelloBiCalls.removeFirst() }
+    return sayHelloBiCalls.first!
   }
 
 }

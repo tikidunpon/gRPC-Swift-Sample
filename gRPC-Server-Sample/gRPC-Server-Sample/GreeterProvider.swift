@@ -7,11 +7,34 @@
 //
 
 import Foundation
+import SwiftGRPC
 
 final class GreeterProvider: Greeter_GreeterProvider {
     func sayHello(request: Greeter_HelloRequest, session: Greeter_GreeterSayHelloSession) throws -> Greeter_HelloResponse {
         var g = Greeter_HelloResponse()
         g.message = request.name + " world"
         return g
+    }
+    
+    func sayHelloBi(session: Greeter_GreeterSayHelloBiSession) throws -> ServerStatus? {
+        var count = 0
+        while true {
+            do {
+                guard let request = try session.receive()
+                    else { break }  // End of stream
+                var response = Greeter_HelloResponse()
+                response.message = "Swift echo update (\(count)): \(request.name)"
+                count += 1
+                try session.send(response) {
+                    if let error = $0 {
+                        print("update error: \(error)")
+                    }
+                }
+            } catch {
+                print("update error: \(error)")
+                break
+            }
+        }
+        return .ok
     }
 }
