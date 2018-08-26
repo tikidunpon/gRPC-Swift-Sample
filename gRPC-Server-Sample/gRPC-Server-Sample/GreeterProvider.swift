@@ -12,7 +12,7 @@ import SwiftGRPC
 final class GreeterProvider: Greeter_GreeterProvider {
     func sayHello(request: Greeter_HelloRequest, session: Greeter_GreeterSayHelloSession) throws -> Greeter_HelloResponse {
         var g = Greeter_HelloResponse()
-        g.message = request.name + " world"
+        g.text = request.text + " world"
         return g
     }
     
@@ -23,7 +23,7 @@ final class GreeterProvider: Greeter_GreeterProvider {
                 guard let request = try session.receive()
                     else { break }  // End of stream
                 var response = Greeter_HelloResponse()
-                response.message = "Swift echo update (\(count)): \(request.name)"
+                response.text = "Swift echo update (\(count)): \(request.text)"
                 count += 1
                 try session.send(response) {
                     if let error = $0 {

@@ -11,11 +11,12 @@ import UIKit
 class ViewController: UIViewController {
     
     var call: Greeter_GreeterSayHelloBiCall?
-    var client: Greeter_GreeterServiceClient?
+    let client = Greeter_GreeterServiceClient.init(address: "127.0.0.1:50051",
+                                                   secure: false)
 
     @IBAction func sendAction(_ sender: Any) {
         var request = Greeter_HelloRequest()
-        request.name = "koichi"
+        request.text = "hello"
         let _ = try? self.call?.send(request) { (error) in
             if let error = error {
                 print("error: \(error)")
@@ -42,22 +43,41 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-//        let client = Greeter_GreeterServiceClient.init(address: "127.0.0.1:50051", secure: false)
-//        var request = Greeter_HelloRequest()
-//        request.name = "hello"
-//        let ret = try? client.sayHello(request)
-//        print("gRPC Server returns " + ret!.message)
-
-        self.client = Greeter_GreeterServiceClient.init(address: "127.0.0.1:50051", secure: false)
-        client?.channel.subscribe(callback: { (connectivityState) in
+//        blockingSayHello()
+//        nonBlockingSayHello()
+        bi()
+    }
+    
+    func bi() {
+        client.channel.subscribe(callback: { (connectivityState) in
             print("connectivityState = \(connectivityState)")
         })
         
-        self.call = try! self.client?.sayHelloBi { (result) in
+        self.call = try! self.client.sayHelloBi { (result) in
             // 最終的なステータスコード等
             print("result.statusCode = \(result.statusCode)")
         }
     }
+    
+    func blockingSayHello() {
+        var request = Greeter_HelloRequest()
+        request.text = "hello"
+        let response = try? self.client.sayHello(request)
+        print("gRPC Server returns " + response!.text)
+    }
+    
+    func nonBlockingSayHello() {
+        var request = Greeter_HelloRequest()
+        request.text = "hello"
+        let _ = try? self.client.sayHello(request, completion: { (response, result) in
+            if result.success, result.statusCode == .ok {
+                print("gRPC Server returns " + response!.text)
+            } else {
+                print("gRPC Server returns error")
+            }
+        })
+    }
+    
        
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
